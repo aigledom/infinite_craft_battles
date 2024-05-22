@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const wordRoutes = require("./routes/wordRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const errorHandler = require("./errorHandler");
 
 const app = express();
@@ -25,6 +26,9 @@ app.get("/", (req, res) => {
 
 // Use the word routes
 app.use("/words", wordRoutes);
+
+// Use the admin routes
+app.use("/admin", adminRoutes);
 
 // Error handler
 app.use(errorHandler);

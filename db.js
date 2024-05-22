@@ -7,6 +7,7 @@ const pool = mysql.createPool({
     user: 'root',
     password: '',
     database: 'infiniteCraftGenerator',
+    port:3307, //MODIFY WHEN USING DEFAULT PORT
 });
 
 module.exports = pool;

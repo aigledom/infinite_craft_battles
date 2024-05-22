@@ -3,40 +3,42 @@ const puppeteerHelper = require("../helpers/puppeteerHelper");
 // Function to generate random words
 async function generateRandomWords(numberOfWords) {
   try {
-    // Initialize the array to store the generated words
     const wordList = [];
-    // Launch the browser to the page where words are generated
     const browser = await puppeteerHelper.launchBrowser();
     const page = await browser.newPage();
-    await page.goto(
-      "https://gadgetmates.com/infinite-craft-random-word-generator"
-    );
+    await page.goto("https://gadgetmates.com/infinite-craft-random-word-generator");
+    
     // Accept cookies if present
-    await page.waitForSelector(".sc-qRumB.bcoUVc.amc-focus-first", {
-      timeout: 3000,
+    await page.waitForSelector(".sc-qRumB.bcoUVc.amc-focus-first", { timeout: 3000 }).then(async () => {
+      await page.click(".sc-qRumB.bcoUVc.amc-focus-first");
+    }).catch(() => {
+      console.log("Cookies accept button not found, continuing without clicking.");
     });
-    await page.click(".sc-qRumB.bcoUVc.amc-focus-first");
+    
     // Click the button and extract words
-    await page.waitForSelector("#infinite-craft-random-word-generator button", {
-      timeout: 3000,
-    });
+    await page.waitForSelector("#infinite-craft-random-word-generator button", { timeout: 3000 });
     for (let i = 0; i < numberOfWords; i++) {
       await page.click("#infinite-craft-random-word-generator button");
       // Wait for the word to be generated upon click and then extract it
       await page.waitForSelector("#random-word-output", { timeout: 3000 });
+      // Add delay to ensure word generation
+      await new Promise(resolve => setTimeout(resolve, 500)); // 0.5 seconds dela
       let randomWord = await page.evaluate(() => {
         return document.querySelector("#random-word-output").textContent.trim();
       });
-      // Add the word to the array
-      wordList.push(randomWord);
+      // Log the extracted word for debugging
+      console.log(`Extracted word ${i + 1}:`, randomWord);
+      // Add the word to the array if not empty
+      if (randomWord) {
+        wordList.push(randomWord);
+      } else {
+        console.error(`Error: Retrieved empty word at iteration ${i + 1}`);
+      }
     }
-    // Close the browser once the process is finished
     await browser.close();
-    // Return the array of generated words
     return wordList;
   } catch (error) {
-    // Throw an error if there is a problem during word generation
-    throw new Error(error.message);
+    throw new Error(`Error generating random words: ${error.message}`);
   }
 }
 
