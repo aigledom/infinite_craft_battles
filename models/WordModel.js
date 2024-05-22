@@ -1,9 +1,9 @@
 const pool = require('../db');
 
 // Function fetch words from the database
-function getWords(limit = 10) {
+function getRandomWords(limit = 10) {
     return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM words LIMIT ?', [limit], (error, results) => {
+        pool.query('SELECT * FROM words ORDER BY RAND() LIMIT ?', [limit], (error, results) => {
             if (error) {
                 // Create an Error object with the error message and reject the promise
                 const errorMessage = error.message || 'Error fetching words from database';
@@ -15,7 +15,7 @@ function getWords(limit = 10) {
 }
 
 // Function to insert words into the database
-async function insertWords(words) {
+async function insertRandomWords(words) {
     console.log(words);
     // Array to store the results for each word
     const results = [];
@@ -56,6 +56,6 @@ function wordExists(word) {
 }
 
 module.exports = {
-    getWords,
-    insertWords
+    getRandomWords,
+    insertRandomWords
 };

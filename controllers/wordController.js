@@ -7,7 +7,7 @@ async function getRandomWords(req, res) {
         // Default to getting 10 words if count is not provided
         const numberOfWords  = req.query.numberOfWords || 10;
         // Fetch the word list from the database using the retrieved number of words
-        const wordList = await wordModel.getWords(numberOfWords);
+        const wordList = await wordModel.getRandomWords(numberOfWords);
         // Render the view with the fetched word list
         res.render('index', { wordList });
     } catch (error) {
@@ -25,7 +25,7 @@ async function insertRandomWords(req, res){
         // Generate random words using the randomWordsService
         const randomWords = await wordService.generateRandomWords(numberOfWords);
         // Insert the generated random words into the database
-        await wordModel.insertWords(randomWords);
+        await wordModel.insertRandomWords(randomWords);
         // Send a success response
         res.status(200).json({ message: 'Random words inserted into database' });
     } catch (error) {
