@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
-const randomWordsRoute = require("./routes/randomWordsRoute");
-const errorHandler = require('./errorHandler');
+const wordRoutes = require("./routes/wordRoutes");
+const errorHandler = require("./errorHandler");
 
 const app = express();
 const port = 3000;
@@ -23,8 +23,8 @@ app.get("/", (req, res) => {
   res.send("Welcome to Infinite Craft Battles!");
 });
 
-// Use the random words router
-app.use("/random-words", randomWordsRoute);
+// Use the word routes
+app.use("/words", wordRoutes);
 
 // Error handler
 app.use(errorHandler);

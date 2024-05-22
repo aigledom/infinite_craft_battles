@@ -1,7 +1,7 @@
 const puppeteerHelper = require("../helpers/puppeteerHelper");
 
 // Function to generate random words
-async function generateRandomWords() {
+async function generateRandomWords(numberOfWords) {
   try {
     // Initialize the array to store the generated words
     const wordList = [];
@@ -11,25 +11,24 @@ async function generateRandomWords() {
     await page.goto(
       "https://gadgetmates.com/infinite-craft-random-word-generator"
     );
-    // Wait for the accept cookies button to be available and click it
+    // Accept cookies if present
     await page.waitForSelector(".sc-qRumB.bcoUVc.amc-focus-first", {
       timeout: 3000,
     });
     await page.click(".sc-qRumB.bcoUVc.amc-focus-first");
-    // Wait for the button to be available and then click it 9 times to get
-    // the words to fill the list
+    // Click the button and extract words
     await page.waitForSelector("#infinite-craft-random-word-generator button", {
       timeout: 3000,
     });
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < numberOfWords; i++) {
       await page.click("#infinite-craft-random-word-generator button");
       // Wait for the word to be generated upon click and then extract it
-      await page.waitForSelector("#random-word-output");
-      const randomWord = await page.evaluate(() => {
+      await page.waitForSelector("#random-word-output", { timeout: 3000 });
+      let randomWord = await page.evaluate(() => {
         return document.querySelector("#random-word-output").textContent.trim();
       });
       // Add the word to the array
-      wordList[i] = randomWord;
+      wordList.push(randomWord);
     }
     // Close the browser once the process is finished
     await browser.close();
